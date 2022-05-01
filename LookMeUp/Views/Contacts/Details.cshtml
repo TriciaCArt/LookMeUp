@@ -1,0 +1,99 @@
+﻿@model LookMeUp.Models.Contact
+@using LookMeUp.Services.Interfaces
+@inject IImageService ImageService
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Contact</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Birthdate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Birthdate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address1)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address1)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address2)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address2)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.State)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ZipCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        </dl>
+          @*<dt>
+            @if (item.ImageData != null)
+            {
+               <img style="height: 80px; width: 80px;" src="@ImageService.ConvertByteArrayToFile(item.ImageData,item.ImageType);" />
+            }
+           else
+            {
+                <img id="contactImage" class="img-fluid img-thumbnail mt-2" style="height: 80px; width: 80px;" src="https://..." />
+            }
+             </dt>*@
+
+    
+    @foreach (Category category in Model.Categories)
+    {
+        <p>@category.Name</p>
+    }
+
+
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

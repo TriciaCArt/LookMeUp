@@ -7,15 +7,18 @@ namespace LookMeUp.Models
     public class Contact
     {
         public int Id { get; set; }
+
+        [Required]
         public string? AppUserId { get; set; }
+
         [Required]
         [Display(Name = "First Name")]
-        [StringLength(50, ErrorMessage = "Nope. Try again. the {0} myst be at least {2} and at max {1} characters long", MinimumLength = 2)]
+        [StringLength(50, ErrorMessage = "Nope. Try again. The {0} must be at least {2} and at max {1} characters long", MinimumLength = 2)]
         public string? FirstName { get; set; }
 
         [Required]
         [Display(Name = "Last Name")]
-        [StringLength(50, ErrorMessage = "Nope. Try again. the {0} must be at least {2} and at max {1} characters long", MinimumLength = 2)]
+        [StringLength(50, ErrorMessage = "Nope. Try again. The {0} must be at least {2} and at max {1} characters long", MinimumLength = 2)]
         public string? LastName { get; set; }
 
         [NotMapped]
@@ -24,7 +27,8 @@ namespace LookMeUp.Models
 
         [Display(Name = "Birthday")]
         [DataType(DataType.Date)]
-        public DateTime Birthdate { get; set; }
+        public DateTime? Birthdate { get; set; }
+
         [Required]
         public string? Address1 { get; set; }
         public string? Address2 { get; set; }
@@ -33,9 +37,11 @@ namespace LookMeUp.Models
         public string? City { get; set; }
 
         [Required]
-        public States? State { get; set; }
+        public States State { get; set; }
 
         [Required]
+        [Display(Name = "Zip Code")]
+        [DataType(DataType.PostalCode)]
         public int ZipCode { get; set; }
 
         [Required]
@@ -46,7 +52,7 @@ namespace LookMeUp.Models
         [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }
 
-        [Required]
+        
         [DataType(DataType.Date)]
         public DateTime Created { get; set; }
 

@@ -5,6 +5,9 @@ namespace LookMeUp.Models
     public class Category
     {
         public int Id { get; set; }
+
+
+        [Required]
         public string? AppUserID { get; set; }
 
         [Required]

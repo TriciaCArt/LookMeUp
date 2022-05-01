@@ -8,12 +8,12 @@ namespace LookMeUp.Models
     {
         [Required]
         [Display(Name = "First Name")]
-        [StringLength(50, ErrorMessage = "Nope. Try again. the {0} myst be at least {2} and at max {1} characters long", MinimumLength = 2)]
+        [StringLength(50, ErrorMessage = "Nope. Try again. The {0} must be at least {2} and at max {1} characters long", MinimumLength = 2)]
         public string? FirstName { get; set; }
 
         [Required]
         [Display(Name = "Last Name")]
-        [StringLength(50, ErrorMessage = "Nope. Try again. the {0} myst be at least {2} and at max {1} characters long", MinimumLength = 2)]
+        [StringLength(50, ErrorMessage = "Nope. Try again. The {0} must be at least {2} and at max {1} characters long", MinimumLength = 2)]
         public string? LastName { get; set; }
         [NotMapped]
         public string? FullName { get { return $"{FirstName} {LastName}"; } }
