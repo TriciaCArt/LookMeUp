@@ -57,9 +57,9 @@
                                  <span class="fw-bold me-2">Phone:</span>@Html.DisplayFor(modelItem => contact.PhoneNumber)
                             </div>
                             <div class="fs-4">
-                                <a class="me-3" asp-action="Edit" asp-route-id="@contact.Id" title="Edit Contact"><i class="bi bi-pencil text-dark"></i></a>
-                                <a class="me-3" asp-action="Details" asp-route-id="@contact.Id" title="View Contact Details"><i class="bi bi-book text-dark"></i></a>
-                                <a class="me-3" asp-action="EmailContact" asp-route-id="@contact.Id" title="Send Contact an Email"><i class="bi bi-envelope text-dark"></i></a>
+                                <a class="me-3" asp-action="Edit" asp-route-id="@contact.Id" title="Edit Contact"><i class="bi bi-pencil text-light"></i></a>
+                                <a class="me-3" asp-action="Details" asp-route-id="@contact.Id" title="View Contact Details"><i class="bi bi-book text-light"></i></a>
+                                <a class="me-3" asp-action="EmailContact" asp-route-id="@contact.Id" title="Send Contact an Email"><i class="bi bi-envelope text-light"></i></a>
                                 <a asp-action="Delete" asp-route-id="@contact.Id" title="Delete Contact"><i class="bi bi-trash text-danger"></i></a>
                             </div>
                         </div>
@@ -69,3 +69,6 @@
         </div>
     }
 </div>
+@section scripts{
+
+}

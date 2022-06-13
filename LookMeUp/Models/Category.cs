@@ -6,7 +6,6 @@ namespace LookMeUp.Models
     {
         public int Id { get; set; }
 
-
         [Required]
         public string? AppUserID { get; set; }
 

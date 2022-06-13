@@ -1,7 +1,7 @@
 ﻿:root {
     --dark-gs-color: #212121;
-    --light-gs-color: black;
-    --highlight-gs-color: purple;
+    --light-gs-color: white;
+    --highlight-gs-color: tan;
 }
 
 a {
@@ -19,7 +19,7 @@ body {
 }
 
 .pageBG {
-    background: url("/img/MyAuntNumber2.jpg");
+    background: url("/img/DreamNightSky.jpg");
     background-size: cover;
 }
 

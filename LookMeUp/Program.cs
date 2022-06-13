@@ -20,9 +20,15 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+//Custom services
 builder.Services.AddScoped<ILookMeUpService, LookMeUpService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<SearchService>();
+
+builder.Services.AddScoped<ILookMeUpEmailSender, LookMeUpEmailSender>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
+
 
 builder.Services.AddMvc();
 

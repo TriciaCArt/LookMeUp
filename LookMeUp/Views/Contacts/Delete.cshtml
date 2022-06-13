@@ -1,4 +1,9 @@
-﻿@model LookMeUp.Models.Contact
+﻿@using LookMeUp.Services
+@using LookMeUp.Services.Interfaces
+
+@model LookMeUp.Models.Contact
+
+@inject IImageService ImageService
 
 @{
     ViewData["Title"] = "Delete";
@@ -7,72 +12,51 @@
 <h1>Delete</h1>
 
 <h3>Are you sure you want to delete this?</h3>
-<div>
+<div class="row">
     <h4>Contact</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Birthdate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Birthdate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address1)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address1)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address2)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address2)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.State)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.State)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ZipCode)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ZipCode)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        
-    </dl>
+    <div class="col">
+            <div class="glass-cf-style darkGlass">
+                <div class="row g-0">
+                    <div class="col-md-5 m-0 p-0 text-center">
+                        <figure>
+                            <img src='@ImageService.ConvertByteArrayToFile(Model.ImageData, Model.ImageType)' class="img-fluid img-thumbnail m-3" style="height: 10rem;">
+                            <figcaption>
+                                <span class="card-title fs-5">@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)</span>
+                            </figcaption>
+                        </figure>               
+                    </div>
+                    <div class="col-md-7 text-center text-md-start">
+                        <div class="card-body darkGlass">
+                            <div class="card-text fs-5 fw-bold">
+                                Address
+                            </div>
+                            <div class="card-text fs-5">
+                                @Html.DisplayFor(model => model.Address1)
+                            </div>
+                            <div class="card-text fs-5 mb-2">
+                                @Html.DisplayFor(model => model.City), 
+                                @Html.DisplayFor(model => model.State) 
+                                @Html.DisplayFor(model => model.ZipCode)
+                            </div>
+                            
+                            <div class="card-text fs-5">
+                                <span class="fw-bold me-2">Email:</span>@Html.DisplayFor(model => model.Email)
+                            </div>
+                            <div class="card-text fs-5 mb-3">
+                                 <span class="fw-bold me-2">Phone:</span>@Html.DisplayFor(model => model.PhoneNumber)
+                            </div>
+                            <div class="fs-4">
+                                <a class="me-3" asp-action="Edit" asp-route-id="@Model.Id" title="Edit Contact"><i class="bi bi-pencil text-light"></i></a>
+                                <a class="me-3" asp-action="Details" asp-route-id="@Model.Id" title="View Contact Details"><i class="bi bi-book text-light"></i></a>
+                                <a class="me-3" asp-action="EmailContact" asp-route-id="@Model.Id" title="Send Contact an Email"><i class="bi bi-envelope text-light"></i></a>
+                                <a asp-action="Delete" asp-route-id="Id" title="Delete Contact"><i class="bi bi-trash text-danger"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />

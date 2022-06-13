@@ -1,8 +1,4 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using LookMeUp.Enumes;
 using LookMeUp.Services.Interfaces;
 using LookMeUp.Services;
+using LookMeUp.Models.ViewModels;
 
 namespace LookMeUp.Controllers
 {
@@ -23,20 +20,24 @@ namespace LookMeUp.Controllers
         private readonly ILookMeUpService _lookMeUpService;
         private readonly IImageService _iimageService;
         private readonly SearchService _searchService;
+        private readonly ILookMeUpEmailSender _emailSender;
 
-        public ContactsController(ApplicationDbContext context, UserManager<AppUser> userManager, ILookMeUpService lookMeUpService, IImageService iimageService, SearchService searchService)
+        public ContactsController(ApplicationDbContext context, UserManager<AppUser> userManager, ILookMeUpService lookMeUpService, IImageService iimageService, SearchService searchService, ILookMeUpEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
             _lookMeUpService = lookMeUpService;
             _iimageService = iimageService;
             _searchService = searchService;
+            _emailSender = emailSender;
         }
 
         // GET: Contacts
         [Authorize]
-        public IActionResult Index(int id)
+        public IActionResult Index(int id, string swalMessage = null)
         {
+            ViewData["SwalMessage"] = swalMessage;
+
             List<Contact> contacts = new List<Contact>();
 
             string appUserId = _userManager.GetUserId(User);
@@ -66,6 +67,60 @@ namespace LookMeUp.Controllers
             List<Contact> contacts = _searchService.SearchContacts(searchString, userId).ToList();
 
             return View(nameof(Index), contacts);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> EmailContact(int id)
+        {
+            Contact contact = await _context.Contacts.Include(c => c.Categories).FirstOrDefaultAsync(c => c.Id == id);
+            if(contact == null)
+            {
+                return NotFound();
+            }
+
+            EmailData emailData = new()
+            {
+                EmailAddress = contact.Email,
+                FirstName = contact.FirstName,
+                LastName = contact.LastName,
+            };
+
+            EmailContactVewModel model = new()
+            {
+                Contact = contact,
+                EmailData = emailData
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EmailContact(EmailData emailData)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser appUser = await _userManager.GetUserAsync(User);
+                string emailBody = _emailSender.CompseEmailBody(appUser, emailData);
+                try
+                {
+                    await _emailSender.SendEmailAsync(emailData.EmailAddress, emailData.Subject, emailBody);
+                    return RedirectToAction("Index", "Contacts", new {swalMessage = "Email Sent!"});
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("Index", "Contacts", new {swalMessage = "Error: Email Send Failed."});
+                    throw;
+                    
+                }
+                
+
+                return RedirectToAction("Index", "Contacts");
+            }
+
+
+            return View();
         }
 
         // GET: Contacts/Details/5

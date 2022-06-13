@@ -11,6 +11,8 @@ using LookMeUp.Models;
 using Microsoft.AspNetCore.Authorization;
 using LookMeUp.Enumes;
 using Microsoft.AspNetCore.Identity;
+using LookMeUp.Models.ViewModels;
+using LookMeUp.Services.Interfaces;
 
 namespace LookMeUp.Controllers
 {
@@ -18,11 +20,13 @@ namespace LookMeUp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILookMeUpEmailSender _lookMeUpEmailSender;
 
-        public CategoriesController(ApplicationDbContext context, UserManager<AppUser> userManager)
+        public CategoriesController(ApplicationDbContext context, UserManager<AppUser> userManager, ILookMeUpEmailSender lookMeUpEmailSender)
         {
             _context = context;
             _userManager = userManager;
+            _lookMeUpEmailSender = lookMeUpEmailSender;
         }
 
         // GET: Categories
@@ -30,7 +34,7 @@ namespace LookMeUp.Controllers
         public async Task<IActionResult> Index()
         {
             string userId = _userManager.GetUserId(User);
-            
+
             List<Category> categories = await _context.Categories.Where(c => c.AppUserID == userId).Include(c => c.AppUser).ToListAsync();
 
 
@@ -54,6 +58,45 @@ namespace LookMeUp.Controllers
             }
 
             return View(category);
+        }
+
+       
+        [HttpGet]
+        public async Task<IActionResult> EmailCategory(int? id)
+        {
+            Category category = await _context.Categories.Include(c => c.Contacts).FirstOrDefaultAsync(c => c.Id == id);
+
+            List<string> emails = category.Contacts.Select(c => c.Email).ToList();
+
+            EmailData emailData = new()
+            {
+                GroupName = category.Name,
+                EmailAddress = string.Join(";", emails),
+                Subject = $"Group Message: - {category.Name}"
+            };
+
+            EmailCategoryViewModel model = new()
+            {
+                Contacts = category.Contacts.ToList(),
+                EmailData = emailData
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EmailCategory(EmailData emailData)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser appUser = await _userManager.GetUserAsync(User);
+                string emailBody = _lookMeUpEmailSender.CompseEmailBody(appUser, emailData);
+
+                await _lookMeUpEmailSender.SendEmailAsync(emailData.EmailAddress, emailData.Subject, emailBody);
+
+                return RedirectToAction("Index", "Categories");
+            };
+            return View();
         }
 
         // GET: Categories/Create
@@ -80,7 +123,7 @@ namespace LookMeUp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
+
             return View(category);
         }
 
@@ -91,14 +134,17 @@ namespace LookMeUp.Controllers
             if (id == null)
             {
                 return NotFound();
-            }
-
+            }   
+            
             Category category = await _context.Categories.FindAsync(id);
+
+            category.AppUserID = _userManager.GetUserId(User);
+
             if (category == null)
             {
                 return NotFound();
             }
-            
+
             return View(category);
         }
 
@@ -136,7 +182,7 @@ namespace LookMeUp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            
+
             return View(category);
         }
 
