@@ -56,6 +56,9 @@
                             <div class="card-text fs-5 mb-3">
                                  <span class="fw-bold me-2">Phone:</span>@Html.DisplayFor(modelItem => contact.PhoneNumber)
                             </div>
+                            <div class="card-text fs-5 mb-3">
+                                 <span class="fw-bold me-2">Category:</span>@Html.DisplayFor(modelItem => contact.Categories)
+                            </div>
                             <div class="fs-4">
                                 <a class="me-3" asp-action="Edit" asp-route-id="@contact.Id" title="Edit Contact"><i class="bi bi-pencil text-light"></i></a>
                                 <a class="me-3" asp-action="Details" asp-route-id="@contact.Id" title="View Contact Details"><i class="bi bi-book text-light"></i></a>

@@ -6,7 +6,7 @@ namespace LookMeUp.Services.Interfaces
 {
     public interface ILookMeUpEmailSender : IEmailSender
     {
-        string CompseEmailBody(AppUser sender, EmailData emailData);
+        string ComposeEmailBody(AppUser sender, EmailData emailData);
         Task SendEmailAsync(AppUser appUser, List<Contact> contact, EmailData emailData);
 
     }

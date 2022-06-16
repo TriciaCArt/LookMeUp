@@ -1,8 +1,4 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -90,7 +86,7 @@ namespace LookMeUp.Controllers
             if (ModelState.IsValid)
             {
                 AppUser appUser = await _userManager.GetUserAsync(User);
-                string emailBody = _lookMeUpEmailSender.CompseEmailBody(appUser, emailData);
+                string emailBody = _lookMeUpEmailSender.ComposeEmailBody(appUser, emailData);
 
                 await _lookMeUpEmailSender.SendEmailAsync(emailData.EmailAddress, emailData.Subject, emailBody);
 
@@ -138,7 +134,6 @@ namespace LookMeUp.Controllers
             
             Category category = await _context.Categories.FindAsync(id);
 
-            category.AppUserID = _userManager.GetUserId(User);
 
             if (category == null)
             {
@@ -153,7 +148,7 @@ namespace LookMeUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, Name, AppUserId")] Category category)
         {
             if (id != category.Id)
             {
@@ -164,7 +159,6 @@ namespace LookMeUp.Controllers
             {
                 try
                 {
-                    category.AppUserID = _userManager.GetUserId(User);
                     _context.Update(category);
                     await _context.SaveChangesAsync();
 

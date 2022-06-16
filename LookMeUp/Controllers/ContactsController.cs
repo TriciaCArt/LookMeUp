@@ -102,7 +102,7 @@ namespace LookMeUp.Controllers
             if (ModelState.IsValid)
             {
                 AppUser appUser = await _userManager.GetUserAsync(User);
-                string emailBody = _emailSender.CompseEmailBody(appUser, emailData);
+                string emailBody = _emailSender.ComposeEmailBody(appUser, emailData);
                 try
                 {
                     await _emailSender.SendEmailAsync(emailData.EmailAddress, emailData.Subject, emailBody);
@@ -113,10 +113,9 @@ namespace LookMeUp.Controllers
                     return RedirectToAction("Index", "Contacts", new {swalMessage = "Error: Email Send Failed."});
                     throw;
                     
-                }
-                
+                }                
 
-                return RedirectToAction("Index", "Contacts");
+                //return RedirectToAction("Index", "Contacts");
             }
 
 
@@ -160,7 +159,7 @@ namespace LookMeUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Birthdate,Address1,Address2,City,State,ZipCode,Email,PhoneNumber,ImageType")] Contact contact, List<int> categoryList)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Birthdate,Address1,Address2,City,State,ZipCode,Email,PhoneNumber,ImageFile")] Contact contact, List<int> categoryList)
         {
             ModelState.Remove("AppUserId");
 
@@ -226,17 +225,20 @@ namespace LookMeUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, AppUserId, FirstName,LastName,Birthdate,Address1,Address2,City,State,ZipCode,Email,PhoneNumber, Created, ImageFile, ImageData, ImageType")] Contact contact, List<int> categoryList)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName,LastName,Birthdate,Address1,Address2,City,State,ZipCode,Email,PhoneNumber, ImageFile")] Contact contact, List<int> categoryList)
         {
             if (id != contact.Id)
             {
                 return NotFound();
             }
 
+            ModelState.Remove("AppUserId");
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    contact.AppUserId = _userManager.GetUserId(User);
                     contact.Created = DateTime.SpecifyKind(contact.Created, DateTimeKind.Utc);
 
                     if (contact.Birthdate != null)

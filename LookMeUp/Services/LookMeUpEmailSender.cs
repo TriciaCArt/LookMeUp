@@ -86,12 +86,6 @@ namespace LookMeUp.Services
             return emailMsg.ToString();
 
         }
-
-        public string CompseEmailBody(AppUser sender, EmailData emailData)
-        {
-            throw new NotImplementedException();
-        }
-
-       
+              
     }
 }
