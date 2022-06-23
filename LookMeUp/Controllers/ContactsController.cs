@@ -54,7 +54,7 @@ namespace LookMeUp.Controllers
                 contacts = appUser.Categories.FirstOrDefault(c => c.Id == id).Contacts.ToList();
             }
 
-            ViewData["CategoryId"] = new SelectList(appUser.Categories, "Id", "Name", id);
+            ViewData["CategoryList"] = new SelectList(appUser.Categories, "Id", "Name", id);
 
             return View(contacts);
         }
