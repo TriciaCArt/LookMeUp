@@ -10,11 +10,11 @@
 <div class="glass-cf-style darkGlass p-2">
     <form asp-action="Edit" asp-controller="Contacts" enctype="multipart/form-data">
         <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
-            <input hidden asp-for="Id" />
-            <input hidden asp-for="AppUserId" />
-            <input hidden asp-for="Created" />
-            <input hidden asp-for="ImageData" />
-            <input hidden asp-for="ImageType" />
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="AppUserId" />
+            <input type="hidden" asp-for="Created" />
+            <input type="hidden" asp-for="ImageData" />
+            <input type="hidden" asp-for="ImageType" />
 
             <div class="col">
                 <label asp-for="FirstName" class="form-label"></label>
@@ -73,20 +73,22 @@
             <div class="form-group">
                 <label asp-for="ImageFile" class="control-label"></label>
                 <input asp-for="ImageFile" class="form-control" accept=".png,.jpg,.jpeg,.gif"
-                            onchange="document.getElementById('contactImage').src = window.URL.createObjectURL(this.files[0])" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>                
+                       onchange="document.getElementById('contactImage').src = window.URL.createObjectURL(this.files[0])" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="col col-md-2">
-                @if(Model.ImageData != null){
+                @if (Model.ImageData != null)
+                {
                     <img id="contactImage" class="img-fluid img-thumbnail mt-2" style="width:120px;height:120px" src="@ImageService.ConvertByteArrayToFile(Model.ImageData, Model.ImageType)">
-                } else
+                }
+                else
                 {
                     <img id="contactImage" class="img-fluid img-thumbnail mt-2" style="width:120px;height:120px" src="~/img/ContactImages/DefaultContactImage.png">
                 }
             </div>
             <div class="col col-md-5">
                 <label asp-for="Categories" class="control-label"></label>
-                <select name="CategoryList" class ="form-control text-dark" asp-items="ViewBag.CategoryList" multiple></select>
+                <select name="CategoryList" class="form-control text-dark" asp-items="ViewBag.CategoryList" multiple></select>
             </div>
             <div class="col col-md-12 mt-4 mb-2">
                 <input type="submit" value="Create" class="btn glass-button w-100 text-warning fw-bold" />
@@ -102,6 +104,6 @@
 </div>
 @section Scripts {
     @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
-}
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
