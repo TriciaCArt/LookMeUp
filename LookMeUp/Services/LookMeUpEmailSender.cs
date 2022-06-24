@@ -20,35 +20,25 @@ namespace LookMeUp.Services
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-
             //We need to compose an Email based partially on the data supplied by the user
-            var emailSender = _mailSettings.Email;
-
+            var emailSender = _mailSettings.Email ?? Environment.GetEnvironmentVariable("Email");
             MimeMessage newEmail = new();
-
             newEmail.Sender = MailboxAddress.Parse(emailSender);
-
             foreach (var emailAddress in email.Split(';'))
             {
                 newEmail.To.Add(MailboxAddress.Parse(emailAddress));
             }
-
             newEmail.Subject = subject;
-
             BodyBuilder emailBody = new();
             emailBody.HtmlBody = htmlMessage;
             newEmail.Body = emailBody.ToMessageBody();
-
             //At this point we are done composing the email and now we need to turn
             //our focus on configuring the Simple Mail Transfer Protocol (SMTP) server
             using SmtpClient smtpClient = new();
-
-            var host = _mailSettings.Host;
-            var port = Convert.ToInt32(_mailSettings.Port);
-
+            var host = _mailSettings.Host ?? Environment.GetEnvironmentVariable("Host");
+            int port = _mailSettings.Port != 0 ? Convert.ToInt32(_mailSettings.Port) : int.Parse(Environment.GetEnvironmentVariable("Port")!);
             await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-            await smtpClient.AuthenticateAsync(emailSender, _mailSettings.Password);
-
+            await smtpClient.AuthenticateAsync(emailSender, _mailSettings.Password ?? Environment.GetEnvironmentVariable("Password"));
             await smtpClient.SendAsync(newEmail);
             await smtpClient.DisconnectAsync(true);
         }
@@ -57,6 +47,8 @@ namespace LookMeUp.Services
         {
             throw new NotImplementedException();
         }
+
+
 
         public string ComposeEmailBody(AppUser sender, EmailData emailData)
         {

@@ -41,6 +41,7 @@ namespace LookMeUp.Controllers
             List<Contact> contacts = new List<Contact>();
 
             string appUserId = _userManager.GetUserId(User);
+
             AppUser appUser = _context.Users
                 .Include(c => c.Contacts)
                 .ThenInclude(c => c.Categories)
@@ -208,6 +209,7 @@ namespace LookMeUp.Controllers
             }
 
             Contact contact = await _context.Contacts.FindAsync(id);
+
             if (contact == null)
             {
                 return NotFound();
@@ -225,7 +227,7 @@ namespace LookMeUp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName,LastName,Birthdate,Address1,Address2,City,State,ZipCode,Email,PhoneNumber, ImageFile")] Contact contact, List<int> categoryList)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, FirstName,LastName,Birthdate,Address1,Address2,City,State,ZipCode,Email,PhoneNumber,ImageData,ImageType,ImageFile")] Contact contact, List<int> categoryList)
         {
             if (id != contact.Id)
             {
@@ -245,6 +247,7 @@ namespace LookMeUp.Controllers
                     {
                         contact.Birthdate = DateTime.SpecifyKind(contact.Birthdate.Value, DateTimeKind.Utc);
                     }
+
                     if (contact.ImageFile != null)
                     {
                         //TODO: Image Service
@@ -256,15 +259,19 @@ namespace LookMeUp.Controllers
                     await _context.SaveChangesAsync();
 
                     List<Category> oldCategories = (await _lookMeUpService.GetContactCategoriesAsync(contact.Id)).ToList();
+                    
                     foreach(Category category in oldCategories)
                     {
-                        await _lookMeUpService.AddContactToCategoryAsync(category.Id, contact.Id);
+                        await _lookMeUpService.RemoveContactFromCategoryAsync(category.Id, contact.Id);
                     }
 
                     foreach (int categoryId in categoryList)
                     {
-                        await _lookMeUpService.RemoveContactFromCategoryAsync(categoryId, contact.Id);
+                        await _lookMeUpService.AddContactToCategoryAsync(categoryId, contact.Id);
+                     
                     }
+
+                   
                 }
                 catch (DbUpdateConcurrencyException)
                 {

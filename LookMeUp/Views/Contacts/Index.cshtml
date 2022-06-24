@@ -18,7 +18,7 @@
     <form asp-action="Index" asp-controller="Contacts">
         <label class="form-label">CATEGORY FILTER</label>
         <div class="col-3">
-            <select name="id" asp-items="@ViewBag.CategoryId" class="form-control glass-button text-white fw-bold" onchange="this.form.submit()"><option>All Contacts</option></select>
+            <select name="id" asp-items="@ViewBag.CategoryId" class="form-control glass-button text-dark fw-bold" onchange="this.form.submit()"><option>All Contacts</option></select>
         </div>
     </form>
 </div>
@@ -57,7 +57,11 @@
                                  <span class="fw-bold me-2">Phone:</span>@Html.DisplayFor(modelItem => contact.PhoneNumber)
                             </div>
                             <div class="card-text fs-5 mb-3">
-                                 <span class="fw-bold me-2">Category:</span>@Html.DisplayFor(modelItem => contact.Categories)
+                                <span class="fw-bold me-2">Category:</span>@foreach(var category in contact.Categories)
+                                {
+                                    @category.Name <br />
+                                }
+                                @*@Html.DisplayFor(modelItem => contact.Categories)*@
                             </div>
                             <div class="fs-4">
                                 <a class="me-3" asp-action="Edit" asp-route-id="@contact.Id" title="Edit Contact"><i class="bi bi-pencil text-light"></i></a>
